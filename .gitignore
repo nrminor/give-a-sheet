@@ -1,6 +1,4 @@
-/target
-Cargo.lock
-
-.DS_Store
-._*
-
+*.beam
+*.ez
+/build
+erl_crash.dump
