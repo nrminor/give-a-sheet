@@ -1,6 +1,6 @@
-use std::{collections::HashSet, fmt, path::PathBuf, rc::Rc};
+use std::{collections::HashSet, fmt, path::Path, rc::Rc};
 
-use crate::RetrieveSampleIds;
+use crate::pipelines::RetrieveSampleIds;
 
 #[derive(Debug, Clone)]
 pub enum ViralReconPlatforms {
@@ -28,7 +28,7 @@ impl Default for ViralReconPlatforms {
 }
 
 impl RetrieveSampleIds for ViralReconPlatforms {
-    fn retrieve_samples(&self, file_paths: &[PathBuf]) -> HashSet<Rc<str>> {
+    fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
         let illumina_patterns = ["_L001_R2_001.fastq.gz", "_L001_R1_001.fastq.gz"].join("|");
         let nanopore_patterns = [".fastq.gz"].join("|");
         match self {
