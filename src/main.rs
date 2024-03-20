@@ -2,11 +2,14 @@ use anyhow::Result;
 use glob::glob;
 use std::{collections::HashSet, path::PathBuf, rc::Rc};
 
-pub mod cli;
+use crate::viralrecon::ViralReconPlatforms;
 
-enum _ViralReconPlatforms {
-    Illumina,
-    Nanopore,
+pub mod cli;
+pub mod pipelines;
+pub mod viralrecon;
+
+trait RetrieveSampleIds {
+    fn retrieve_samples(&self, file_paths: &[PathBuf]) -> HashSet<Rc<str>>;
 }
 
 struct _PairedFiles<'a> {
@@ -33,18 +36,16 @@ fn _write_illumina_line(illum_line: Vec<_PairedFiles>) -> Result<()> {
     Ok(())
 }
 
+fn _collect_files_per_sample(_fastq_paths: &[PathBuf]) -> Result<()> {
+    Ok(())
+}
+
 fn main() -> Result<()> {
     // these settings will be replaced with clap command line args
-    let search_dir = String::from("fastq/");
+    let search_dir =
+        String::from("/Users/nickminor/Documents/dholk_experiments/29849/run_inputs/29758/fastq");
     let fastq_suffix = String::from(".fastq.gz");
-    let pipeline = "viralrecon";
-    let mode = "illumina";
-
-    // TODO: temporary dbg macros to callout information that will be
-    // replaced with clap args
-    dbg!("Directory of FASTQs specified: {}", &search_dir);
-    dbg!("Pipeline selected: {}", pipeline);
-    dbg!("Mode selected: {}", mode);
+    let mode = ViralReconPlatforms::Illumina;
 
     // define the full pattern
     let pattern = format!("{}/*{}", &search_dir, &fastq_suffix);
@@ -55,10 +56,12 @@ fn main() -> Result<()> {
         .collect();
 
     // separate out the basenames of the FASTQs
-    let _sample_ids: HashSet<Rc<str>> = fastq_paths
-        .into_iter()
-        .map(|path| Rc::from(path.file_name().unwrap().to_string_lossy().as_ref()))
-        .collect();
+    let sample_ids: &HashSet<Rc<str>> = &mode.retrieve_samples(&fastq_paths);
+
+    // collect the filenames associated with each basename
+    // let filenames = sample_ids.into_iter()
+
+    dbg!(&sample_ids);
 
     Ok(())
 }
