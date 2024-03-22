@@ -1,5 +1,8 @@
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use std::{collections::HashSet, fmt, path::Path, rc::Rc};
+
+use crate::viralrecon::{self, CollectByPlatform};
+use clap::ValueEnum;
 
 #[derive(Debug, Clone)]
 pub enum SupportedPipelines {
@@ -11,12 +14,6 @@ pub enum SupportedPipelines {
     // MAG,
     // Sarek,
     // NanoSeq,
-}
-
-impl Default for SupportedPipelines {
-    fn default() -> Self {
-        Self::ViralRecon
-    }
 }
 
 impl fmt::Display for SupportedPipelines {
@@ -38,55 +35,114 @@ impl fmt::Display for SupportedPipelines {
     }
 }
 
+#[derive(ValueEnum, Debug, Clone)]
+pub enum SeqPlatform {
+    Illumina,
+    Nanopore,
+}
+
+impl fmt::Display for SeqPlatform {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                SeqPlatform::Illumina => "illumina",
+                SeqPlatform::Nanopore => "nanopore",
+            }
+        )
+    }
+}
+
+pub trait FindFiles {
+    fn find_files(&self, search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>>;
+}
+
+impl FindFiles for SupportedPipelines {
+    fn find_files(&self, search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>> {
+        match self {
+            SupportedPipelines::ViralRecon => {
+                viralrecon::find_viralrecon_files(search_dir, fastq_suffix)
+            } // SupportedPipelines::Pangenome => "nf-core/pangenome",
+              // SupportedPipelines::FetchNGS => "nf-core/fetchngs",
+              // SupportedPipelines::Demultiplex => "nf-core/demultiplex",
+              // SupportedPipelines::TaxProfiler => "nf-core/taxprofiler",
+              // SupportedPipelines::MAG => "nf-core/mag",
+              // SupportedPipelines::Sarek => "nf-core/sarek",
+              // SupportedPipelines::NanoSeq => "nf-core/nanoseq",
+        }
+    }
+}
+
+// TODO:
+// this needs to implemented for pipeline variant and seq platform variant
 pub trait RetrieveSampleIds {
     fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>>;
 }
 
-#[derive(Debug)]
-pub struct PairedFiles<'a> {
-    pub basename: &'a str,
-    pub r1_file: &'a str,
-    pub r2_file: &'a str,
+// TODO:
+// this needs to implemented for pipeline variant and seq platform variant
+pub trait ConcatLines {
+    fn concat_lines(
+        &self,
+        sample_ids: &HashSet<Rc<str>>,
+        fastq_paths: &[Rc<Path>],
+        platform: &SeqPlatform,
+    ) -> Vec<String>;
 }
 
-#[derive(Debug)]
-pub struct NanoporeFiles<'a> {
-    pub basename: &'a str,
-    pub barcode: &'a usize,
+impl ConcatLines for SupportedPipelines {
+    fn concat_lines(
+        &self,
+        sample_ids: &HashSet<Rc<str>>,
+        fastq_paths: &[Rc<Path>],
+        platform: &SeqPlatform,
+    ) -> Vec<String> {
+        match self {
+            SupportedPipelines::ViralRecon => sample_ids
+                .iter()
+                .filter_map(|x| platform.collect_by_platform(x, fastq_paths).ok())
+                .collect::<Vec<String>>(),
+        }
+    }
 }
 
-pub fn collect_fields<'a>(
-    sample_id: &'a Rc<str>,
-    fastq_paths: &'a [Rc<Path>],
-) -> Result<PairedFiles<'a>> {
-    // figure out which FASTQ files go with the provided sample_id
-    let sample_fastqs: Vec<&str> = fastq_paths
-        .into_iter()
-        .map(|x| match x.to_str() {
-            Some(path_str_slice) => path_str_slice,
-            None => &"",
-        })
-        .filter(|x| x.contains(sample_id.as_ref()))
-        .collect();
+pub trait GiveASheet {
+    // self is an enum specifying the pipeline, search dir is the directory to search
+    // for input data, fastq_suffix defaults to just ".fastq.gz",
+    fn give_a_sheet(
+        &self,
+        search_dir: &Path,
+        fastq_suffix: &str,
+        platform: &SeqPlatform,
+    ) -> Result<()>;
+}
 
-    // pull out the R1 and R2 FASTQ files
-    let fastq1: &str = &sample_fastqs
-        .iter()
-        .filter(|x| x.contains("R1"))
-        .collect::<Vec<_>>()
-        .first()
-        .unwrap();
-    let fastq2: &str = &sample_fastqs
-        .iter()
-        .filter(|x| x.contains("R1"))
-        .collect::<Vec<_>>()
-        .first()
-        .unwrap();
+impl GiveASheet for SupportedPipelines {
+    fn give_a_sheet(
+        &self,
+        search_dir: &Path,
+        fastq_suffix: &str,
+        platform: &SeqPlatform,
+    ) -> Result<()> {
+        match self {
+            SupportedPipelines::ViralRecon => {
+                let fastq_paths = &self.find_files(search_dir, fastq_suffix)?;
+                let sample_ids: &HashSet<Rc<str>> = &platform.retrieve_samples(&fastq_paths);
+                let lines = &self.concat_lines(sample_ids, fastq_paths, &platform);
 
-    // instantiate an illumina line and return it
-    Ok(PairedFiles {
-        basename: sample_id,
-        r1_file: fastq1,
-        r2_file: fastq2,
-    })
+                for line in lines {
+                    eprintln!("{}", line);
+                }
+
+                Ok(())
+            } // SupportedPipelines::Pangenome => "nf-core/pangenome",
+              // SupportedPipelines::FetchNGS => "nf-core/fetchngs",
+              // SupportedPipelines::Demultiplex => "nf-core/demultiplex",
+              // SupportedPipelines::TaxProfiler => "nf-core/taxprofiler",
+              // SupportedPipelines::MAG => "nf-core/mag",
+              // SupportedPipelines::Sarek => "nf-core/sarek",
+              // SupportedPipelines::NanoSeq => "nf-core/nanoseq",
+        }
+    }
 }
