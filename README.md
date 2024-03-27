@@ -3,7 +3,6 @@
 Give-A-Sheet generates type-validated, error-free input samplesheets for the nf-core pipeline you want to run. Pipeline support is limited to [`viralrecon`](https://nf-co.re/viralrecon) and [`scrnaseq`](https://nf-co.re/scrnaseq) at this stage, but support for additional pipelines will be added gradually in the future.
 
 ```
-
  ██████╗ ██╗██╗   ██╗███████╗     █████╗     ███████╗██╗  ██╗███████╗███████╗████████╗██╗
 ██╔════╝ ██║██║   ██║██╔════╝    ██╔══██╗    ██╔════╝██║  ██║██╔════╝██╔════╝╚══██╔══╝██║
 ██║  ███╗██║██║   ██║█████╗      ███████║    ███████╗███████║█████╗  █████╗     ██║   ██║
@@ -25,13 +24,12 @@ samplesheets for the pipeline you want to run. Pipeline support is limited at th
 but more pipelines will be added in the future.
 
 
-
 Usage: give_a_sheet [OPTIONS] [COMMAND]
 
 Commands:
- viral-recon  Generate an input samplesheet for `nf-core/viralrecon`.
- scrnaseq     Generate an input samplesheet for `nf-core/scrnaseq`.
- help         Print this message or the help of the given subcommand(s)
+ viralrecon  Generate an input samplesheet for `nf-core/viralrecon`.
+ scrnaseq    Generate an input samplesheet for `nf-core/scrnaseq`.
+ help        Print this message or the help of the given subcommand(s)
 
 Options:
  -v, --verbose...  Increase logging verbosity
