@@ -4,12 +4,12 @@ Give-A-Sheet generates type-validated, error-free input samplesheets for the nf-
 
 ```
 
-██████╗ ██╗██╗   ██╗███████╗     █████╗     ███████╗██╗  ██╗███████╗███████╗████████╗██╗
+ ██████╗ ██╗██╗   ██╗███████╗     █████╗     ███████╗██╗  ██╗███████╗███████╗████████╗██╗
 ██╔════╝ ██║██║   ██║██╔════╝    ██╔══██╗    ██╔════╝██║  ██║██╔════╝██╔════╝╚══██╔══╝██║
 ██║  ███╗██║██║   ██║█████╗      ███████║    ███████╗███████║█████╗  █████╗     ██║   ██║
 ██║   ██║██║╚██╗ ██╔╝██╔══╝      ██╔══██║    ╚════██║██╔══██║██╔══╝  ██╔══╝     ██║   ╚═╝
 ╚██████╔╝██║ ╚████╔╝ ███████╗    ██║  ██║    ███████║██║  ██║███████╗███████╗   ██║   ██╗
-╚═════╝ ╚═╝  ╚═══╝  ╚══════╝    ╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝
+ ╚═════╝ ╚═╝  ╚═══╝  ╚══════╝    ╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝
 
 Give-A-Sheet: A Command Line Tool that Constructs Input Samplesheets for NF-Core Pipelines
 =========================================================================================
@@ -30,6 +30,7 @@ Usage: give_a_sheet [OPTIONS] [COMMAND]
 
 Commands:
  viral-recon  Generate an input samplesheet for `nf-core/viralrecon`.
+ scrnaseq     Generate an input samplesheet for `nf-core/scrnaseq`.
  help         Print this message or the help of the given subcommand(s)
 
 Options:
