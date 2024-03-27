@@ -5,9 +5,9 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/nrminor/give_a_sheet"
-homepage = "https://github.com/nrminor/give_a_sheet"
-documentation = "https://github.com/nrminor/give_a_sheet/blob/main/README.md"
+repository = "https://github.com/nrminor/give-a-sheet"
+homepage = "https://github.com/nrminor/give-a-sheet"
+documentation = "https://github.com/nrminor/give-a-sheet/blob/main/README.md"
 keywords = ["science", "reproducibility", "bioinformatics", "data"]
 categories = ["command-line-utilities", "science"]
 
