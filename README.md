@@ -1,5 +1,7 @@
 # Give a sheet! A command line tool for generating samplesheets for [nf-core](https://nf-co.re/) pipelines
 
+[![Open Source Starter Files](https://github.com/nrminor/give-a-sheet/actions/workflows/open-source-starter.yml/badge.svg)](https://github.com/nrminor/give-a-sheet/actions/workflows/open-source-starter.yml) [![Rust CI](https://github.com/nrminor/give-a-sheet/actions/workflows/rust-ci.yml/badge.svg)](https://github.com/nrminor/give-a-sheet/actions/workflows/rust-ci.yml)
+
 `give_a_sheet` generates type-validated, error-free input samplesheets for the nf-core pipeline you want to run. Pipeline support is limited to [`viralrecon`](https://nf-co.re/viralrecon) and [`scrnaseq`](https://nf-co.re/scrnaseq) at this stage, but support for additional pipelines will be added gradually in the future.
 
 ```
