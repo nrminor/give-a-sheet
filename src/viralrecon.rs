@@ -1,6 +1,7 @@
-use crate::utils::SeqPlatform;
+use crate::utils::{write_lines, SeqPlatform};
 use color_eyre::eyre::Result;
 use glob::glob;
+use regex::Regex;
 use std::{collections::HashSet, ffi::OsStr, path::Path, rc::Rc};
 
 use crate::utils::RetrieveSampleIds;
@@ -23,19 +24,21 @@ impl RetrieveSampleIds for SeqPlatform {
     fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
         match self {
             // handle paired end FASTQ files for Illumina
-            SeqPlatform::Illumina => file_paths
-                .into_iter()
-                .map(|path| {
-                    Rc::from(
-                        path.file_name()
-                            .unwrap_or(OsStr::new(""))
-                            .to_string_lossy()
-                            .replace("_L001_R1_001.fastq.gz", "")
-                            .replace("_L001_R2_001.fastq.gz", "")
-                            .as_ref(),
-                    )
-                })
-                .collect(),
+            SeqPlatform::Illumina => {
+                let illumina_pattern = Regex::new(r"_L\d{3}_R\d_\d{3}\.fastq\.gz$").unwrap();
+                file_paths
+                    .into_iter()
+                    .map(|path| {
+                        Rc::from(
+                            path.file_name()
+                                .unwrap_or(OsStr::new(""))
+                                .to_string_lossy()
+                                .as_ref(),
+                        )
+                    })
+                    .map(|x| Rc::from(illumina_pattern.replace_all(&x, "").to_string()))
+                    .collect()
+            }
             // handle per-barcode single FASTQs for Nanopore
             SeqPlatform::Nanopore => file_paths
                 .into_iter()
@@ -121,14 +124,15 @@ pub fn concat_lines(
         .collect::<Vec<String>>()
 }
 
-pub fn give_a_sheet(input_dir: &Path, fastq_ext: &str, platform: &SeqPlatform) -> Result<()> {
+pub fn give_a_sheet(
+    input_dir: &Path,
+    fastq_ext: &str,
+    platform: &SeqPlatform,
+    output_prefix: &Option<String>,
+) -> Result<()> {
     let fastq_paths = find_files(input_dir, fastq_ext)?;
     let sample_ids: &HashSet<Rc<str>> = &platform.retrieve_samples(&fastq_paths);
     let lines = concat_lines(sample_ids, &fastq_paths, platform);
-
-    for line in lines {
-        eprintln!("{}", line);
-    }
-
-    Ok(())
+    let header = "sample,fastq_1,fastq_2";
+    write_lines(&lines, header, output_prefix)
 }

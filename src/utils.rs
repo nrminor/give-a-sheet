@@ -1,4 +1,5 @@
-use std::{collections::HashSet, fmt, path::Path, rc::Rc};
+use color_eyre::eyre::Result;
+use std::{collections::HashSet, fmt, fs::File, io::BufWriter, io::Write, path::Path, rc::Rc};
 
 use clap::ValueEnum;
 
@@ -25,4 +26,21 @@ impl fmt::Display for SeqPlatform {
 // this needs to implemented for pipeline variant and seq platform variant
 pub trait RetrieveSampleIds {
     fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>>;
+}
+
+pub fn write_lines(lines: &[String], header: &str, output_prefix: &Option<String>) -> Result<()> {
+    let out_name = match output_prefix {
+        Some(prefix) => format!("{}_samplesheet.csv", prefix),
+        None => String::from("samplesheet.csv"),
+    };
+
+    let file = File::create(out_name)?;
+    let mut buf_writer = BufWriter::new(file);
+
+    writeln!(buf_writer, "{}", header)?;
+    lines
+        .into_iter()
+        .try_for_each(|line| writeln!(buf_writer, "{}", line))?;
+
+    Ok(())
 }

@@ -57,10 +57,10 @@ pub enum Commands {
         /// The sequencing platform where FASTQs came from
         #[arg(short, long, required = true)]
         platform: SeqPlatform,
-        // /// Output file prefix (the part before the `_samplesheet.csv`)
-        // #[arg(short, long, required = false)]
-        // output_file: Option<String>,
 
+        /// Output file prefix (the part before the `_samplesheet.csv`)
+        #[arg(short, long, required = false, default_value = None)]
+        output_prefix: Option<String>,
         // /// Check a pre-existing samplesheet
         // #[arg(short, long, required = false, default_value = "samplesheet.csv")]
         // check: Option<String>,
@@ -81,5 +81,9 @@ pub enum Commands {
         /// the number of cells expected
         #[arg(short, long, required = true)]
         expected_cells: i64,
+
+        /// Output file prefix (the part before the `_samplesheet.csv`)
+        #[arg(short, long, required = false, default_value = None)]
+        output_prefix: Option<String>,
     },
 }

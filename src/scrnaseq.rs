@@ -1,9 +1,14 @@
+use regex::Regex;
 use std::{collections::HashSet, ffi::OsStr, path::Path, rc::Rc};
+use tracing::warn;
 
+use crate::utils::write_lines;
 pub use crate::viralrecon::find_files;
 use color_eyre::eyre::Result;
 
 fn retrieve_samples(file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
+    let illumina_pattern = Regex::new(r"_L\d{3}_R\d_\d{3}\.fastq\.gz$").unwrap();
+
     file_paths
         .into_iter()
         .map(|path| {
@@ -11,12 +16,19 @@ fn retrieve_samples(file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
                 path.file_name()
                     .unwrap_or(OsStr::new(""))
                     .to_string_lossy()
-                    .replace("_L001_R1_001.fastq.gz", "")
-                    .replace("_L001_R2_001.fastq.gz", "")
                     .as_ref(),
             )
         })
+        .map(|x| Rc::from(illumina_pattern.replace_all(&x, "").to_string()))
         .collect()
+}
+
+fn check_sample_ids(sample_ids: &HashSet<Rc<str>>) {
+    for id in sample_ids {
+        if id.chars().count() >= 64 {
+            warn!("Sample id {} is 64 or more characters long, which is maximum enforced by some of the SCRNAseq aligners. SCRNAseq may crash if you don't manually shorten the id in your samplesheet.", id)
+        }
+    }
 }
 
 fn collect_per_sample(
@@ -52,7 +64,7 @@ fn collect_per_sample(
     Ok(vec![sample_id, fastq1, fastq2, &cell_str].join(","))
 }
 
-pub fn concat_lines(
+fn concat_lines(
     sample_ids: &HashSet<Rc<str>>,
     fastq_paths: &[Rc<Path>],
     expected_cells: &i64,
@@ -63,14 +75,21 @@ pub fn concat_lines(
         .collect::<Vec<String>>()
 }
 
-pub fn give_a_sheet(input_dir: &Path, fastq_ext: &str, expected_cells: &i64) -> Result<()> {
+pub fn give_a_sheet(
+    input_dir: &Path,
+    fastq_ext: &str,
+    expected_cells: &i64,
+    output_prefix: &Option<String>,
+) -> Result<()> {
+    // find the FASTQ files and separate out the unique sample IDs
     let fastq_paths = find_files(input_dir, fastq_ext)?;
     let sample_ids: HashSet<Rc<str>> = retrieve_samples(&fastq_paths);
+
+    // check the sample IDs for any that are too long
+    check_sample_ids(&sample_ids);
+
+    // concatenate and write the lines
     let lines = concat_lines(&sample_ids, &fastq_paths, expected_cells);
-
-    for line in lines {
-        println!("{}", line)
-    }
-
-    Ok(())
+    let header = "sample,fastq_1,fastq_2,expected_cells";
+    write_lines(&lines, header, output_prefix)
 }

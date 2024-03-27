@@ -15,15 +15,17 @@ fn main() -> Result<()> {
             input_dir,
             fastq_ext,
             platform,
+            output_prefix,
         }) => {
-            viralrecon::give_a_sheet(input_dir, fastq_ext, platform)?;
+            viralrecon::give_a_sheet(input_dir, fastq_ext, platform, output_prefix)?;
         }
         Some(Commands::Scrnaseq {
             input_dir,
             fastq_ext,
             expected_cells,
+            output_prefix,
         }) => {
-            scrnaseq::give_a_sheet(input_dir, fastq_ext, &expected_cells)?;
+            scrnaseq::give_a_sheet(input_dir, fastq_ext, &expected_cells, output_prefix)?;
         }
         None => {
             eprintln!("{}\n", cli::INFO);
