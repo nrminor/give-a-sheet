@@ -1,6 +1,6 @@
 # Give a sheet! A command line tool for generating samplesheets for [nf-core](https://nf-co.re/) pipelines
 
-Give-A-Sheet generates type-validated, error-free input samplesheets for the nf-core pipeline you want to run. Pipeline support is limited to [`viralrecon`](https://nf-co.re/viralrecon) and [`scrnaseq`](https://nf-co.re/scrnaseq) at this stage, but support for additional pipelines will be added gradually in the future.
+`give_a_sheet` generates type-validated, error-free input samplesheets for the nf-core pipeline you want to run. Pipeline support is limited to [`viralrecon`](https://nf-co.re/viralrecon) and [`scrnaseq`](https://nf-co.re/scrnaseq) at this stage, but support for additional pipelines will be added gradually in the future.
 
 ```
  ██████╗ ██╗██╗   ██╗███████╗     █████╗     ███████╗██╗  ██╗███████╗███████╗████████╗██╗
