@@ -4,9 +4,12 @@ on:
   push:
     branches: ["main"]
     paths:
+      - .github/workflows/rust-ci.yml
       - "src/main.rs"
-      - "src/lib.rs"
-      - "lib/*"
+      - "src/cli.rs"
+      - "src/viralrecon.rs"
+      - "src/scrnaseq.rs"
+      - "src/utils.rs"
       - "cargo.toml"
       - "cargo.lock"
   pull_request:
