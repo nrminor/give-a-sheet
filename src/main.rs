@@ -11,14 +11,14 @@ pub mod viralrecon;
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match &cli.command {
-        Some(Commands::ViralRecon {
+        Some(Commands::Viralrecon {
             input_dir,
             fastq_ext,
             platform,
         }) => {
             viralrecon::give_a_sheet(input_dir, fastq_ext, platform)?;
         }
-        Some(Commands::SCRNAseq {
+        Some(Commands::Scrnaseq {
             input_dir,
             fastq_ext,
             expected_cells,

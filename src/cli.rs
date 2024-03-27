@@ -25,7 +25,6 @@ samplesheet until runtime (unless you download and use the excellent nf-validati
 Give-A-Sheet handles all this for you by generating type-validated, error-free input
 samplesheets for the pipeline you want to run. Pipeline support is limited at this stage,
 but more pipelines will be added in the future.
-
 ";
 
 #[derive(Parser)]
@@ -46,7 +45,7 @@ pub enum Commands {
         about = "Generate an input samplesheet for `nf-core/viralrecon`.",
         aliases = &["vr", "virrec", "vrc"]
     )]
-    ViralRecon {
+    Viralrecon {
         /// Input directory to traverse for FASTQ files.
         #[arg(short, long, required = false)]
         input_dir: PathBuf,
@@ -68,9 +67,9 @@ pub enum Commands {
     },
     #[clap(
             about = "Generate an input samplesheet for `nf-core/scrnaseq`.",
-            aliases = &["sc", "scr", "vrc"]
+            aliases = &["sc", "scr"]
         )]
-    SCRNAseq {
+    Scrnaseq {
         /// Input directory to traverse for FASTQ files.
         #[arg(short, long, required = false)]
         input_dir: PathBuf,
