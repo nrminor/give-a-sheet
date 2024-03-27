@@ -1,11 +1,11 @@
-use crate::pipelines::SeqPlatform;
+use crate::utils::SeqPlatform;
 use color_eyre::eyre::Result;
 use glob::glob;
 use std::{collections::HashSet, ffi::OsStr, path::Path, rc::Rc};
 
-use crate::pipelines::RetrieveSampleIds;
+use crate::utils::RetrieveSampleIds;
 
-pub fn find_viralrecon_files(search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>> {
+pub fn find_files(search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>> {
     // define the full pattern
     let pattern = format!("{}/*{}", &search_dir.display(), &fastq_suffix);
 
@@ -108,4 +108,27 @@ impl CollectByPlatform for SeqPlatform {
             }
         }
     }
+}
+
+pub fn concat_lines(
+    sample_ids: &HashSet<Rc<str>>,
+    fastq_paths: &[Rc<Path>],
+    platform: &SeqPlatform,
+) -> Vec<String> {
+    sample_ids
+        .iter()
+        .filter_map(|x| platform.collect_by_platform(x, fastq_paths).ok())
+        .collect::<Vec<String>>()
+}
+
+pub fn give_a_sheet(input_dir: &Path, fastq_ext: &str, platform: &SeqPlatform) -> Result<()> {
+    let fastq_paths = find_files(input_dir, fastq_ext)?;
+    let sample_ids: &HashSet<Rc<str>> = &platform.retrieve_samples(&fastq_paths);
+    let lines = concat_lines(sample_ids, &fastq_paths, platform);
+
+    for line in lines {
+        eprintln!("{}", line);
+    }
+
+    Ok(())
 }

@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
 
-use crate::pipelines::SeqPlatform;
+use crate::utils::SeqPlatform;
 
 pub const INFO: &str = r"
 
@@ -65,5 +65,22 @@ pub enum Commands {
         // /// Check a pre-existing samplesheet
         // #[arg(short, long, required = false, default_value = "samplesheet.csv")]
         // check: Option<String>,
+    },
+    #[clap(
+            about = "Generate an input samplesheet for `nf-core/scrnaseq`.",
+            aliases = &["sc", "scr", "vrc"]
+        )]
+    SCRNAseq {
+        /// Input directory to traverse for FASTQ files.
+        #[arg(short, long, required = false)]
+        input_dir: PathBuf,
+
+        /// File extension for FASTQ files
+        #[arg(short, long, required = false, default_value = ".fastq.gz")]
+        fastq_ext: String,
+
+        /// the number of cells expected
+        #[arg(short, long, required = true)]
+        expected_cells: i64,
     },
 }
