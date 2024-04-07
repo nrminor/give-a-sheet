@@ -22,8 +22,6 @@ impl fmt::Display for SeqPlatform {
     }
 }
 
-// TODO:
-// this needs to implemented for pipeline variant and seq platform variant
 pub trait RetrieveSampleIds {
     fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>>;
 }
