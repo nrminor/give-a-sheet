@@ -1,7 +1,7 @@
 [package]
 name = "give_a_sheet"
 description = "Toolkit for generating input samplesheets for a variety of nf-core pipelines."
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "MIT"
 readme = "README.md"

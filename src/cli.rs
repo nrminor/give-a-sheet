@@ -30,7 +30,7 @@ but more pipelines will be added in the future.
 #[derive(Parser)]
 #[clap(name = "give_a_sheet")]
 #[clap(about = INFO)]
-#[clap(version = "v0.1.0")]
+#[clap(version = "v0.1.2")]
 pub struct Cli {
     #[command(flatten)]
     pub verbose: clap_verbosity_flag::Verbosity,
