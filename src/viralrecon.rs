@@ -98,16 +98,15 @@ impl CollectByPlatform for SeqPlatform {
                 Ok(vec![sample_id, fastq1, fastq2].join(","))
             }
             SeqPlatform::Nanopore => {
-                // figure out which FASTQ files go with the provided sample_id
-                let barcode_fastq = fastq_paths
-                    .iter()
-                    .filter_map(|x| x.to_str())
-                    .find(|x| x.contains(sample_id.as_ref()))
-                    .ok_or("Sample ID no longer matches a FASTQ.")
-                    .unwrap_or("");
+                // pull out the barcode
+                let barcode = if sample_id.starts_with("0") {
+                    sample_id.replace("barcode", "").chars().skip(1).collect()
+                } else {
+                    sample_id.replace("barcode", "")
+                };
 
-                // instantiate an illumina line and return it
-                Ok(vec![sample_id.as_ref(), barcode_fastq].join(","))
+                // instantiate a Nanopore line and return it
+                Ok(vec![sample_id.as_ref(), &barcode].join(","))
             }
         }
     }
