@@ -13,8 +13,7 @@ pub fn find_files(search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>
     // iterate through entries and make sure they aren't symlinks
     let fastq_paths: Vec<Rc<Path>> = glob(&pattern)?
         .filter(|entry| entry.is_ok())
-        .map(|x| x.unwrap())
-        .map(|x| Rc::from(x))
+        .map(|x| Rc::from(x.unwrap()))
         .collect();
 
     Ok(fastq_paths)
