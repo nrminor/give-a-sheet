@@ -20,13 +20,13 @@ pub fn find_files(search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>
 }
 
 impl RetrieveSampleIds for SeqPlatform {
-    fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
+    fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>> {
         match self {
             // handle paired end FASTQ files for Illumina
             SeqPlatform::Illumina => {
-                let illumina_pattern = Regex::new(r"_L\d{3}_R\d_\d{3}\.fastq\.gz$").unwrap();
-                file_paths
-                    .into_iter()
+                let illumina_pattern = Regex::new(r"_L\d{3}_R\d_\d{3}\.fastq\.gz$")?;
+                let paired_files = file_paths
+                    .iter()
                     .map(|path| {
                         Rc::from(
                             path.file_name()
@@ -36,21 +36,25 @@ impl RetrieveSampleIds for SeqPlatform {
                         )
                     })
                     .map(|x| Rc::from(illumina_pattern.replace_all(&x, "").to_string()))
-                    .collect()
+                    .collect();
+                Ok(paired_files)
             }
             // handle per-barcode single FASTQs for Nanopore
-            SeqPlatform::Nanopore => file_paths
-                .into_iter()
-                .map(|path| {
-                    Rc::from(
-                        path.file_name()
-                            .unwrap_or(OsStr::new(""))
-                            .to_string_lossy()
-                            .replace(".fastq.gz", "")
-                            .as_ref(),
-                    )
-                })
-                .collect(),
+            SeqPlatform::Nanopore => {
+                let ont_files = file_paths
+                    .iter()
+                    .map(|path| {
+                        Rc::from(
+                            path.file_name()
+                                .unwrap_or(OsStr::new(""))
+                                .to_string_lossy()
+                                .replace(".fastq.gz", "")
+                                .as_ref(),
+                        )
+                    })
+                    .collect();
+                Ok(ont_files)
+            }
         }
     }
 }
@@ -129,7 +133,7 @@ pub fn give_a_sheet(
     output_prefix: &Option<String>,
 ) -> Result<()> {
     let fastq_paths = find_files(input_dir, fastq_ext)?;
-    let sample_ids: &HashSet<Rc<str>> = &platform.retrieve_samples(&fastq_paths);
+    let sample_ids = &platform.retrieve_samples(&fastq_paths)?;
     let lines = concat_lines(sample_ids, &fastq_paths, platform);
     let header = "sample,fastq_1,fastq_2";
     write_lines(&lines, header, output_prefix)

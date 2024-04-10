@@ -23,7 +23,7 @@ impl fmt::Display for SeqPlatform {
 }
 
 pub trait RetrieveSampleIds {
-    fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> HashSet<Rc<str>>;
+    fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>>;
 }
 
 pub fn write_lines(lines: &[String], header: &str, output_prefix: &Option<String>) -> Result<()> {
