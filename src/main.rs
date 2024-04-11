@@ -25,7 +25,7 @@ fn main() -> Result<()> {
             expected_cells,
             output_prefix,
         }) => {
-            scrnaseq::give_a_sheet(input_dir, fastq_ext, &expected_cells, output_prefix)?;
+            scrnaseq::give_a_sheet(input_dir, fastq_ext, expected_cells, output_prefix)?;
         }
         None => {
             eprintln!("{}\n", cli::INFO);

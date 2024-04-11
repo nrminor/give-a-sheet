@@ -77,39 +77,36 @@ impl CollectByPlatform for SeqPlatform {
             SeqPlatform::Illumina => {
                 // figure out which FASTQ files go with the provided sample_id
                 let sample_fastqs: Vec<&str> = fastq_paths
-                    .into_iter()
-                    .map(|x| match x.to_str() {
-                        Some(path_str_slice) => path_str_slice,
-                        None => &"",
-                    })
+                    .iter()
+                    .map(|x| x.to_str().unwrap_or(""))
                     .filter(|x| x.contains(sample_id.as_ref()))
                     .collect();
 
                 // pull out the R1 and R2 FASTQ files
-                let fastq1: &str = &sample_fastqs
+                let fastq1 = sample_fastqs
                     .iter()
                     .find(|x| x.contains("R1"))
                     .ok_or("No fastq file with 'R1' found")
                     .unwrap();
-                let fastq2: &str = &sample_fastqs
+                let fastq2 = sample_fastqs
                     .iter()
                     .find(|x| x.contains("R2"))
                     .ok_or("No fastq file with 'R2' found")
                     .unwrap();
 
                 // instantiate an illumina line and return it
-                Ok(vec![sample_id, fastq1, fastq2].join(","))
+                Ok([sample_id.as_ref(), fastq1, fastq2].join(","))
             }
             SeqPlatform::Nanopore => {
                 // pull out the barcode
-                let barcode = if sample_id.starts_with("0") {
+                let barcode = if sample_id.starts_with('0') {
                     sample_id.replace("barcode", "").chars().skip(1).collect()
                 } else {
                     sample_id.replace("barcode", "")
                 };
 
                 // instantiate a Nanopore line and return it
-                Ok(vec![sample_id.as_ref(), &barcode].join(","))
+                Ok([sample_id.as_ref(), &barcode].join(","))
             }
         }
     }

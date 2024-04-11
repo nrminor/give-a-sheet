@@ -10,7 +10,7 @@ fn retrieve_samples(file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
     let illumina_pattern = Regex::new(r"_L\d{3}_R\d_\d{3}\.fastq\.gz$").unwrap();
 
     file_paths
-        .into_iter()
+        .iter()
         .map(|path| {
             Rc::from(
                 path.file_name()
@@ -38,21 +38,18 @@ fn collect_per_sample(
 ) -> Result<String> {
     // figure out which FASTQ files go with the provided sample_id
     let sample_fastqs: Vec<&str> = fastq_paths
-        .into_iter()
-        .map(|x| match x.to_str() {
-            Some(path_str_slice) => path_str_slice,
-            None => &"",
-        })
+        .iter()
+        .map(|x| x.to_str().unwrap_or(""))
         .filter(|x| x.contains(sample_id.as_ref()))
         .collect();
 
     // pull out the R1 and R2 FASTQ files
-    let fastq1: &str = &sample_fastqs
+    let fastq1 = sample_fastqs
         .iter()
         .find(|x| x.contains("R1"))
         .ok_or("No fastq file with 'R1' found")
         .unwrap();
-    let fastq2: &str = &sample_fastqs
+    let fastq2 = sample_fastqs
         .iter()
         .find(|x| x.contains("R2"))
         .ok_or("No fastq file with 'R2' found")
@@ -61,7 +58,7 @@ fn collect_per_sample(
     let cell_str = expected_cells.to_string();
 
     // instantiate an illumina line and return it
-    Ok(vec![sample_id, fastq1, fastq2, &cell_str].join(","))
+    Ok([sample_id.as_ref(), fastq1, fastq2, &cell_str].join(","))
 }
 
 fn concat_lines(

@@ -37,7 +37,7 @@ pub fn write_lines(lines: &[String], header: &str, output_prefix: &Option<String
 
     writeln!(buf_writer, "{}", header)?;
     lines
-        .into_iter()
+        .iter()
         .try_for_each(|line| writeln!(buf_writer, "{}", line))?;
 
     Ok(())
