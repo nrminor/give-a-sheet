@@ -39,3 +39,13 @@ Options:
  -h, --help        Print help
  -V, --version     Print version
 ```
+
+### Installation
+
+`give_a_sheet` is currently distributed through [crates.io](https://crates.io/), the Rust package repository. The easiest way to install it on your machine is to [install the Rust toolchain](https://www.rust-lang.org/tools/install) and then `cargo install` it in the command line, like so:
+
+```zsh
+cargo install give_a_sheet
+```
+
+This will compile the tool locally and make it available. Try it out with `give_a_sheet -h`,
