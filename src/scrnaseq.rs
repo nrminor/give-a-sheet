@@ -26,7 +26,6 @@ fn retrieve_samples(file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>> {
         })
         .map(|x| {
             let id = illumina_pattern.replace_all(&x, "").to_string();
-            eprintln!("{}", id);
             Rc::from(id)
         })
         .collect();
