@@ -12,9 +12,9 @@ use color_eyre::eyre::Result;
 ///
 /// Panics if .
 fn retrieve_samples(file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>> {
-    let illumina_pattern = Regex::new(r".*_R[12].*\.fastq\.gz$")?;
+    let illumina_pattern = Regex::new(r"_(?:S\d+_)?(?:L\d+_)?R\d+(?:_\d+)?\.fastq\.gz$")?;
 
-    let hits = file_paths
+    let samples = file_paths
         .iter()
         .map(|path| {
             Rc::from(
@@ -24,10 +24,14 @@ fn retrieve_samples(file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>> {
                     .as_ref(),
             )
         })
-        .map(|x| Rc::from(illumina_pattern.replace_all(&x, "").to_string()))
+        .map(|x| {
+            let id = illumina_pattern.replace_all(&x, "").to_string();
+            eprintln!("{}", id);
+            Rc::from(id)
+        })
         .collect();
 
-    Ok(hits)
+    Ok(samples)
 }
 
 fn check_sample_ids(sample_ids: &HashSet<Rc<str>>) {
