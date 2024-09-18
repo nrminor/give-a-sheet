@@ -26,6 +26,11 @@ pub trait RetrieveSampleIds {
     fn retrieve_samples(&self, file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>>;
 }
 
+/// .
+///
+/// # Errors
+///
+/// This function will return an error if .
 pub fn write_lines(lines: &[String], header: &str, output_prefix: &Option<String>) -> Result<()> {
     let out_name = match output_prefix {
         Some(prefix) => format!("{}_samplesheet.csv", prefix),

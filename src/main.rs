@@ -8,6 +8,11 @@ pub mod scrnaseq;
 pub mod utils;
 pub mod viralrecon;
 
+/// .
+///
+/// # Errors
+///
+/// This function will return an error if .
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match &cli.command {

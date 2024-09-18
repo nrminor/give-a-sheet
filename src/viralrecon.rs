@@ -6,6 +6,15 @@ use std::{collections::HashSet, ffi::OsStr, path::Path, rc::Rc};
 
 use crate::utils::RetrieveSampleIds;
 
+/// .
+///
+/// # Panics
+///
+/// Panics if .
+///
+/// # Errors
+///
+/// This function will return an error if .
 pub fn find_files(search_dir: &Path, fastq_suffix: &str) -> Result<Vec<Rc<Path>>> {
     // define the full pattern
     let pattern = format!("{}/*{}", &search_dir.display(), &fastq_suffix);
@@ -112,6 +121,7 @@ impl CollectByPlatform for SeqPlatform {
     }
 }
 
+/// .
 pub fn concat_lines(
     sample_ids: &HashSet<Rc<str>>,
     fastq_paths: &[Rc<Path>],
@@ -123,6 +133,11 @@ pub fn concat_lines(
         .collect::<Vec<String>>()
 }
 
+/// .
+///
+/// # Errors
+///
+/// This function will return an error if .
 pub fn give_a_sheet(
     input_dir: &Path,
     fastq_ext: &str,

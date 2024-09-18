@@ -42,6 +42,27 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     #[clap(
+            about = "Generate an input samplesheet for `nf-core/scrnaseq`.",
+            aliases = &["sc", "scr"]
+        )]
+    Scrnaseq {
+        /// Input directory to traverse for FASTQ files.
+        #[arg(short, long, required = false)]
+        input_dir: PathBuf,
+
+        /// File extension for FASTQ files
+        #[arg(short, long, required = false, default_value = ".fastq.gz")]
+        fastq_ext: String,
+
+        /// the number of cells expected
+        #[arg(short, long, required = true, default_value_t = 10000)]
+        expected_cells: i64,
+
+        /// Output file prefix (the part before the `_samplesheet.csv`)
+        #[arg(short, long, required = false, default_value = None)]
+        output_prefix: Option<String>,
+    },
+    #[clap(
         about = "Generate an input samplesheet for `nf-core/viralrecon`.",
         aliases = &["vr", "virrec", "vrc"]
     )]
@@ -64,26 +85,5 @@ pub enum Commands {
         // /// Check a pre-existing samplesheet
         // #[arg(short, long, required = false, default_value = "samplesheet.csv")]
         // check: Option<String>,
-    },
-    #[clap(
-            about = "Generate an input samplesheet for `nf-core/scrnaseq`.",
-            aliases = &["sc", "scr"]
-        )]
-    Scrnaseq {
-        /// Input directory to traverse for FASTQ files.
-        #[arg(short, long, required = false)]
-        input_dir: PathBuf,
-
-        /// File extension for FASTQ files
-        #[arg(short, long, required = false, default_value = ".fastq.gz")]
-        fastq_ext: String,
-
-        /// the number of cells expected
-        #[arg(short, long, required = true)]
-        expected_cells: i64,
-
-        /// Output file prefix (the part before the `_samplesheet.csv`)
-        #[arg(short, long, required = false, default_value = None)]
-        output_prefix: Option<String>,
     },
 }

@@ -6,10 +6,15 @@ use crate::utils::write_lines;
 pub use crate::viralrecon::find_files;
 use color_eyre::eyre::Result;
 
-fn retrieve_samples(file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
-    let illumina_pattern = Regex::new(r"_L\d{3}_R\d_\d{3}\.fastq\.gz$").unwrap();
+/// .
+///
+/// # Panics
+///
+/// Panics if .
+fn retrieve_samples(file_paths: &[Rc<Path>]) -> Result<HashSet<Rc<str>>> {
+    let illumina_pattern = Regex::new(r".*_R[12].*\.fastq\.gz$")?;
 
-    file_paths
+    let hits = file_paths
         .iter()
         .map(|path| {
             Rc::from(
@@ -20,7 +25,9 @@ fn retrieve_samples(file_paths: &[Rc<Path>]) -> HashSet<Rc<str>> {
             )
         })
         .map(|x| Rc::from(illumina_pattern.replace_all(&x, "").to_string()))
-        .collect()
+        .collect();
+
+    Ok(hits)
 }
 
 fn check_sample_ids(sample_ids: &HashSet<Rc<str>>) {
@@ -31,6 +38,15 @@ fn check_sample_ids(sample_ids: &HashSet<Rc<str>>) {
     }
 }
 
+/// .
+///
+/// # Panics
+///
+/// Panics if .
+///
+/// # Errors
+///
+/// This function will return an error if .
 fn collect_per_sample(
     sample_id: &Rc<str>,
     fastq_paths: &[Rc<Path>],
@@ -61,6 +77,7 @@ fn collect_per_sample(
     Ok([sample_id.as_ref(), fastq1, fastq2, &cell_str].join(","))
 }
 
+/// .
 fn concat_lines(
     sample_ids: &HashSet<Rc<str>>,
     fastq_paths: &[Rc<Path>],
@@ -72,6 +89,11 @@ fn concat_lines(
         .collect::<Vec<String>>()
 }
 
+/// .
+///
+/// # Errors
+///
+/// This function will return an error if .
 pub fn give_a_sheet(
     input_dir: &Path,
     fastq_ext: &str,
@@ -80,7 +102,7 @@ pub fn give_a_sheet(
 ) -> Result<()> {
     // find the FASTQ files and separate out the unique sample IDs
     let fastq_paths = find_files(input_dir, fastq_ext)?;
-    let sample_ids: HashSet<Rc<str>> = retrieve_samples(&fastq_paths);
+    let sample_ids = retrieve_samples(&fastq_paths)?;
 
     // check the sample IDs for any that are too long
     check_sample_ids(&sample_ids);
