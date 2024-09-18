@@ -55,7 +55,7 @@ pub enum Commands {
         fastq_ext: String,
 
         /// the number of cells expected
-        #[arg(short, long, required = true, default_value_t = 10000)]
+        #[arg(short, long, required = false, default_value_t = 10000)]
         expected_cells: i64,
 
         /// Output file prefix (the part before the `_samplesheet.csv`)
