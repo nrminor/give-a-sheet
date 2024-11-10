@@ -43,7 +43,7 @@ pub struct Cli {
 pub enum Commands {
     #[clap(
             about = "Generate an input samplesheet for `nf-core/scrnaseq`.",
-            aliases = &["sc", "scr"]
+            visible_aliases = &["sc", "scr"]
         )]
     Scrnaseq {
         /// Input directory to traverse for FASTQ files.
@@ -64,7 +64,7 @@ pub enum Commands {
     },
     #[clap(
         about = "Generate an input samplesheet for `nf-core/viralrecon`.",
-        aliases = &["vr", "virrec", "vrc"]
+        visible_aliases = &["vr", "virrec", "vrc"]
     )]
     Viralrecon {
         /// Input directory to traverse for FASTQ files.
