@@ -1,0 +1,19 @@
+[package]
+name = "give_a_sheet"
+version = "0.1.10"
+description.workspace = true
+edition.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
+keywords.workspace = true
+
+[dependencies]
+clap = { version = "4.4.3", features = ["derive", "cargo"] }
+clap-verbosity-flag = "2.2.0"
+color-eyre = "0.6.3"
+nfcore_derive = { path = "../nfcore_derive" }
+libsamplesheet = { path = "../libsamplesheet" }
+thiserror = "2"
+tracing = "0.1.40"
+

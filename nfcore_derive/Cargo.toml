@@ -1,0 +1,18 @@
+[package]
+name = "nfcore_derive"
+version = "0.1.0"
+description.workspace = true
+edition.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
+keywords.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2"
+quote = "1"
+proc-macro2 = "1"
+# libsamplesheet = { path = "../libsamplesheet" }

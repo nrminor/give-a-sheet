@@ -1,0 +1,22 @@
+[package]
+name = "libsamplesheet"
+version = "0.1.0"
+description.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+clap = "4.5.30"
+color-eyre = "0.6.3"
+glob = "0.3.1"
+nfcore_derive = { path = "../nfcore_derive" }
+rayon = "1.9.0"
+regex = "1.10.4"
+thiserror = "2"
+tracing = "0.1.40"

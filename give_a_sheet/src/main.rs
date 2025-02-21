@@ -1,18 +1,8 @@
-use crate::cli::Cli;
 use clap::Parser;
-use cli::Commands;
 use color_eyre::eyre::Result;
+use give_a_sheet::cli::{self, Cli, Commands};
+use libsamplesheet::{prelude::GiveASheet, scrnaseq::ScrnaSeq, viralrecon::ViralRecon};
 
-pub mod cli;
-pub mod scrnaseq;
-pub mod utils;
-pub mod viralrecon;
-
-/// .
-///
-/// # Errors
-///
-/// This function will return an error if .
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match &cli.command {
@@ -22,7 +12,7 @@ fn main() -> Result<()> {
             platform,
             output_prefix,
         }) => {
-            viralrecon::give_a_sheet(input_dir, fastq_ext, platform, output_prefix)?;
+            ViralRecon::new(input_dir, fastq_ext, platform, output_prefix).give_a_sheet()?;
         }
         Some(Commands::Scrnaseq {
             input_dir,
@@ -30,7 +20,7 @@ fn main() -> Result<()> {
             expected_cells,
             output_prefix,
         }) => {
-            scrnaseq::give_a_sheet(input_dir, fastq_ext, expected_cells, output_prefix)?;
+            ScrnaSeq::new(input_dir, fastq_ext, expected_cells, output_prefix).give_a_sheet()?;
         }
         None => {
             eprintln!("{}\n", cli::INFO);

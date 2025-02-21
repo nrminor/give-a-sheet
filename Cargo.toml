@@ -1,7 +1,5 @@
-[package]
-name = "give_a_sheet"
+[workspace.package]
 description = "Toolkit for generating input samplesheets for a variety of nf-core pipelines."
-version = "0.1.6"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
@@ -11,14 +9,21 @@ documentation = "https://github.com/nrminor/give-a-sheet/blob/main/README.md"
 keywords = ["science", "reproducibility", "bioinformatics", "data"]
 categories = ["command-line-utilities", "science"]
 
-[dependencies]
-clap = { version = "4.4.3", features = ["derive", "cargo"] }
-clap-verbosity-flag = "2.2.0"
-color-eyre = "0.6.3"
-glob = "0.3.1"
-rayon = "1.9.0"
-regex = "1.10.4"
-tracing = "0.1.40"
+[workspace]
+members = [
+    "nfcore_derive",
+    "give_a_sheet",
+    "libsamplesheet",
+]
+resolver = "2"
+
+[workspace.dependencies]
+serde = { version = "1.0.203", features = ["serde_derive", "derive", "rc"] }
+reqwest = { version = "0.11", features = [
+  "rustls-tls",
+  "stream",
+  "json",
+] }
 
 [profile.dev.package.backtrace]
 opt-level = 3
