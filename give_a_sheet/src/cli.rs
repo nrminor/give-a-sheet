@@ -28,7 +28,7 @@ but more pipelines will be added in the future.
 ";
 
 #[derive(Parser)]
-#[clap(name = "give_a_sheet")]
+#[clap(name = "giveasheet")]
 #[clap(about = INFO)]
 #[clap(version = "v0.1.2")]
 pub struct Cli {

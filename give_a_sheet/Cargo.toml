@@ -8,6 +8,10 @@ homepage.workspace = true
 readme.workspace = true
 keywords.workspace = true
 
+[[bin]]
+path = "src/main.rs"
+name = "giveasheet"
+
 [dependencies]
 clap = { version = "4.4.3", features = ["derive", "cargo"] }
 clap-verbosity-flag = "2.2.0"

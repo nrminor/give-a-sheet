@@ -26,18 +26,18 @@ samplesheets for the pipeline you want to run. Pipeline support is limited at th
 but more pipelines will be added in the future.
 
 
-Usage: give_a_sheet [OPTIONS] [COMMAND]
+Usage: giveasheet [OPTIONS] [COMMAND]
 
 Commands:
- viralrecon  Generate an input samplesheet for `nf-core/viralrecon`.
- scrnaseq    Generate an input samplesheet for `nf-core/scrnaseq`.
- help        Print this message or the help of the given subcommand(s)
+  scrnaseq    Generate an input samplesheet for `nf-core/scrnaseq`. [aliases: sc, scr]
+  viralrecon  Generate an input samplesheet for `nf-core/viralrecon`. [aliases: vr, virrec, vrc]
+  help        Print this message or the help of the given subcommand(s)
 
 Options:
- -v, --verbose...  Increase logging verbosity
- -q, --quiet...    Decrease logging verbosity
- -h, --help        Print help
- -V, --version     Print version
+  -v, --verbose...  Increase logging verbosity
+  -q, --quiet...    Decrease logging verbosity
+  -h, --help        Print help
+  -V, --version     Print version
 ```
 
 ### Installation
