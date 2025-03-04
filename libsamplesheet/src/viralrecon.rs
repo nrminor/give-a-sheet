@@ -155,12 +155,18 @@ impl CollectByPlatform for SeqPlatform {
                 // pull out the R1 and R2 FASTQ files
                 let fastq1 = sample_fastqs
                     .iter()
-                    .find(|x| x.contains("R1"))
+                    .find(|x| x.contains("_R1_"))
                     .ok_or(eyre!("No fastq file with 'R1' found"))?;
                 let fastq2 = sample_fastqs
                     .iter()
-                    .find(|x| x.contains("R2"))
+                    .find(|x| x.contains("_R2_"))
                     .ok_or(eyre!("No fastq file with 'R2' found"))?;
+                if fastq2.contains("_R1_") {
+                    dbg!("Something went wrong pairing up FASTQs!");
+                    dbg!("FASTQ 1: {fastq1}");
+                    dbg!("FASTQ 2: {fastq2}");
+                };
+                assert!(!fastq2.contains("_R1_"));
 
                 // instantiate an illumina line and return it
                 Ok([sample_id, fastq1, fastq2].join(","))

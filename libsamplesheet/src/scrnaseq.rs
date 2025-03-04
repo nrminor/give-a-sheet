@@ -139,12 +139,12 @@ fn collect_per_sample(
     // pull out the R1 and R2 FASTQ files
     let fastq1 = sample_fastqs
         .iter()
-        .find(|x| x.contains("R1"))
+        .find(|x| x.contains("_R1_"))
         .ok_or("No fastq file with 'R1' found")
         .unwrap();
     let fastq2 = sample_fastqs
         .iter()
-        .find(|x| x.contains("R2"))
+        .find(|x| x.contains("_R2_"))
         .ok_or("No fastq file with 'R2' found")
         .unwrap();
 
