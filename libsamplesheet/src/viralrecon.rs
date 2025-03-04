@@ -1,3 +1,5 @@
+#![allow(clippy::pedantic, clippy::perf)]
+
 use color_eyre::{eyre::eyre, Result};
 use glob::glob;
 use nfcore_derive::NfCore;
@@ -43,10 +45,7 @@ impl FindInputs for ViralRecon<'_> {
         let pattern = format!("{}/*{}", &self.input_dir.display(), &self.fastq_ext);
 
         // iterate through entries and make sure they aren't symlinks
-        let fastq_paths: Vec<PathBuf> = glob(&pattern)?
-            .filter(|entry| entry.is_ok())
-            .map(|x| x.unwrap())
-            .collect();
+        let fastq_paths: Vec<PathBuf> = glob(&pattern)?.flatten().collect();
 
         Ok(fastq_paths)
     }
