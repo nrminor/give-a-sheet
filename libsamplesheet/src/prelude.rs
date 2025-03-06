@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+#![allow(clippy::pedantic, clippy::perf)]
 
 use std::{collections::HashSet, fmt, path::PathBuf, rc::Rc};
 

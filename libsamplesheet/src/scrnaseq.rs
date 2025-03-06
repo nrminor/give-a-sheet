@@ -1,3 +1,5 @@
+#![allow(clippy::pedantic, clippy::perf)]
+
 use glob::glob;
 use nfcore_derive::NfCore;
 use regex::Regex;
@@ -39,7 +41,7 @@ impl<'a> ScrnaSeq<'a> {
     }
 }
 
-impl<'a> FindInputs for ScrnaSeq<'a> {
+impl FindInputs for ScrnaSeq<'_> {
     fn find_files(&self) -> Result<Vec<PathBuf>> {
         // define the full pattern
         let pattern = format!("{}/*{}", &self.input_dir.display(), &self.fastq_ext);
